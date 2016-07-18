@@ -24,26 +24,7 @@ class DatePicker extends Component {
   constructor(props) {
     super(props);
 
-    this.mode = this.props.mode || 'date';
-
-    this.format = this.props.format || FORMATS[this.mode];
-    // component height: 216(DatePickerIOS) + 1(borderTop) + 42(marginTop), IOS only
-    this.height = 259;
-    // slide animation duration time, default to 300ms, IOS only
-    this.duration = this.props.duration || 300;
-
-    this.confirmBtnText = this.props.confirmBtnText || '确定';
-    this.cancelBtnText = this.props.cancelBtnText || '取消';
-
-    this.iconSource = this.props.iconSource || require('./date_icon.png');
-    this.customStyles = this.props.customStyles || {};
-
-    // whether or not show the icon
-    if (typeof this.props.showIcon === 'boolean') {
-      this.showIcon = this.props.showIcon;
-    } else {
-      this.showIcon = true;
-    }
+      this.setLocalsFromProps(this.props);
 
     this.state = {
       date: this.getDate(),
@@ -63,6 +44,29 @@ class DatePicker extends Component {
     this.setModalVisible = this.setModalVisible.bind(this);
   }
 
+    setLocalsFromProps(props) {
+        this.mode = props.mode || 'date';
+
+        this.format = props.format || FORMATS[this.mode];
+        // component height: 216(DatePickerIOS) + 1(borderTop) + 42(marginTop), IOS only
+        this.height = 259;
+        // slide animation duration time, default to 300ms, IOS only
+        this.duration = props.duration || 300;
+
+        this.confirmBtnText = props.confirmBtnText || '确定';
+        this.cancelBtnText = props.cancelBtnText || '取消';
+
+        this.iconSource = props.iconSource || require('./date_icon.png');
+        this.customStyles = props.customStyles || {};
+
+        // whether or not show the icon
+        if (typeof props.showIcon === 'boolean') {
+            this.showIcon = props.showIcon;
+        } else {
+            this.showIcon = true;
+        }
+    }
+
   componentWillMount() {
     // ignore the warning of Failed propType for date of DatePickerIOS, will remove after being fixed by official
     console.ignoredYellowBox = [
@@ -70,6 +74,10 @@ class DatePicker extends Component {
       // Other warnings you don't want like 'jsSchedulingOverhead',
     ];
   }
+
+    componentWillReceiveProps(nextProps) {
+        this.setLocalsFromProps(nextProps);
+    }
 
   setModalVisible(visible) {
     this.setState({modalVisible: visible});
